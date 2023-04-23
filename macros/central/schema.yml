@@ -1,0 +1,6 @@
+version: 2
+
+macros:
+  - name: dev_limit_sql
+    description: This macro limits the select to 10 rows to speed up local build times, if the dev limit is enabled.
+    

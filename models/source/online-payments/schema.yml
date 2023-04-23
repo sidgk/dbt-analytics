@@ -1,0 +1,74 @@
+version: 2
+
+sources:
+  - name: sumup
+    description: Data from online payments
+
+    freshness:
+      warn_after:
+        period: hour
+        count: 24
+      error_after:
+        period: hour
+        count: 48
+
+    tables:
+      - name: store
+        freshness:
+          error_after: {count: 3, period: day}
+
+      - name: transactions
+        freshness:
+          error_after: {count: 24, period: hour}
+
+      - name: devices
+        freshness:
+          error_after: {count: 7, period: day}
+    
+models:
+  - name: raw_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+    description: Table contains transaction details, A transaction is a payment made using the provided devices in the store. each row is unique transaction made using one(1-5) of our devices.
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tripe"
+
+  - name: raw_stores
+    columns:
+      - name: store_id
+        tests:
+          - unique
+          - not_null
+    description: >
+      Table contains store details. Each of our customers have one or multiple stores, 
+      which are physical locations where their business happens, those stores are classified by different typology. 
+      Each row is a row for each store which belongs to a customer.
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tripe"
+  
+  - name: raw_devices
+    columns:
+      - name: device_id
+        tests:
+          - unique
+          - not_null
+      - name: store_id
+        tests:
+          - relationships:
+              to: ref('raw_stores')
+              field: store_id
+      - name: device_type
+        tests:
+          - accepted_values:
+              values: ['1', '2', '3', '4', '5']
+    description: >
+      Table contains device details associated with the specific store, There are different types of devices (1 to 5).
+      The devices are hardware needed to perform any kind of transactions within the store.
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tripe"
