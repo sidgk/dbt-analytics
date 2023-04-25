@@ -1,6 +1,6 @@
 {{
     config(
-        tags=["payments", "12hourly", "weekly"],
+        tags=["payments", "12hourly", "weekly", "source"],
         on_schema_change="sync_all_columns",
         unique_key="id",
     )

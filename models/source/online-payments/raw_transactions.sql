@@ -1,6 +1,6 @@
 {{
     config(
-        tags=["payments", "2hourly", "weekly"],
+        tags=["payments", "2hourly", "weekly", "source"],
         on_schema_change="sync_all_columns",
         unique_key="id",
     )
@@ -13,13 +13,14 @@ with
             cast(device_id as int64) as device_id,
             cast(product_name as string) as product_name,
             cast(product_sku as string) as product_sku,
-            cast(product_name_4 as string) as product_name_4,
+            cast(product_name_4 as string) as category_name,
             cast(amount as int) as amount,
             cast(status as string) as status,
-            cast(card_number as string) as card_number,
+            --removing white spaces in the column to avoid any misinterpretations. 
+            cast(replace(card_number, ' ', '') as string) as card_number,
             cast(cvv as int) as cvv,
-            cast(created_at as timestamp) as created_at,
-            cast(happened_at as timestamp) as happened_at,
+            cast(created_at as timestamp) as inserted_at,
+            cast(happened_at as timestamp) as transaction_happened_at,
             row_number() over (partition by id order by created_at desc) as deduplicate
         from {{ source("sumup", "transactions") }}
     )
@@ -28,13 +29,13 @@ select
     ,device_id
     ,product_name
     ,product_sku
-    ,product_name_4
+    ,category_name
     ,amount
     ,status
     ,card_number
     ,cvv
-    ,created_at
-    ,happened_at
+    ,inserted_at
+    ,transaction_happened_at
 from 
     base
 where

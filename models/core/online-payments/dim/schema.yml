@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: dim_devices
+    description: >
+      Dimension table for the devices we have in our system. Each row is unique for a device type
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tripe"
+    columns:
+      - name: launch_date
+        description: created field, Date when the device type was first introduced into our system. 
+      - name: id
+        description: created field, it is Uniquer Identifier for the device type
+        tests:
+          - unique
+          - not_null:
+              severity: warn
+    
+  - name: dim_stores
+    description: Dimensional model for stores, each row is unique for a store. 
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tripe"
+      
+  - name: dim_transactions
+    description: Dimensional model for transactions, each row is unique for a transaction. This is a incremental model. Meaning, every two hours this table is appended with the newly happened transactions.
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tripe"

@@ -2,15 +2,7 @@ version: 2
 
 sources:
   - name: sumup
-    description: Data from online payments
-
-    freshness:
-      warn_after:
-        period: hour
-        count: 24
-      error_after:
-        period: hour
-        count: 48
+    description: Data for online payments tripe coming from our customers stores. Contains details of transactions that happened in euros.
 
     tables:
       - name: store

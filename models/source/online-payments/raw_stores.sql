@@ -1,6 +1,6 @@
 {{
     config(
-        tags=["12hourly", "weekly"],
+        tags=["12hourly", "2hourly", "weekly", "source"],
         on_schema_change="sync_all_columns",
         unique_key="id",
     )
@@ -12,7 +12,7 @@ SELECT
     cast(address as string) as store_address,
     cast(city as string) as city,
     cast(country as string) as country,
-    cast(created_at as timestamp) as created_at,
+    cast(created_at as timestamp) as store_created_at,
     cast(typology as string) as typology,
     cast(customer_id as int) as customer_id,
     row_number() over (partition by id order by created_at desc) as deduplicate
@@ -26,7 +26,7 @@ select
    store_address,
    city,
    country,
-   created_at,
+   store_created_at,
    typology
 from
     base

@@ -1,0 +1,11 @@
+version: 2
+
+models:       
+
+  - name: fact_transactions
+    description: > 
+      This table contains the measures definied by the online-payment-tribe management, one row per day with the respective date and the measures associated with it.
+      For Developers: This should be an incremental model, pre_hook is recomended to ensure zero data loss.     
+    meta:
+      owner: "@siddu"
+      group: "online-payment-tribe" 
