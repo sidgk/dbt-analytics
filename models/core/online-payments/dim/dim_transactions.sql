@@ -3,11 +3,7 @@
         on_schema_change='sync_all_columns',
         unique_key = 'transaction_id',
         tags=["core","nightly", "weekly"],
-        materialized='incremental',
-        pre_hook = '
-            {% if is_incremental() %}          
-            delete from {{this}} where inserted_at >= dateadd(hour, -6, getdate())            
-            {% endif %}'
+        materialized='table'
     )
 }}
 
@@ -18,14 +14,18 @@ with raw_transactions as (
         *
     from
         {{ ref('raw_transactions') }} 
-    where
-        1 = 1
+    -- where
+    --     1 = 1
+     --     pre_hook = '
+    --         {% if is_incremental() %}          
+    --         delete from {{this}} where inserted_at >= dateadd(hour, -6, getdate())            
+    --         {% endif %}'
 
-        {% if is_incremental() %}
+    --     {% if is_incremental() %}
 
-        and _metadata__timestamp >= dateadd(hour, -6, getdate())
+    --     and _metadata__timestamp >= dateadd(hour, -6, getdate())
 
-        {% endif %}
+    --     {% endif %}
 ),
 raw_devices as(
     select
@@ -40,6 +40,8 @@ dim_stores as(
         store_name,
         typology as store_typology,
         country as store_country
+    from
+        {{ ref('raw_stores') }}
 )
 -- joining transactions with raw_devices and dim_stores to create a dim_transaction table where each row is a single transaction that gives all the details related to the transaction.
 select 

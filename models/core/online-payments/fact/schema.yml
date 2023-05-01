@@ -9,3 +9,6 @@ models:
     meta:
       owner: "@siddu"
       group: "online-payment-tribe" 
+  
+  - name: fact_daily
+    description: contains daily payment_tribe_measures
